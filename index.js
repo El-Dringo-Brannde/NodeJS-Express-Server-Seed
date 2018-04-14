@@ -17,7 +17,7 @@ class server {
       this.grabRoutes(client);
       let CLA = this.pullCLA()
 
-      app.listen(CLA.port, () => console.log(`Server running at port ${this.port}`))
+      app.listen(CLA.port, () => console.log(`Server running at port ${CLA.port}`))
    }
 
    pullCLA() {
@@ -25,7 +25,7 @@ class server {
          { name: 'port', alias: 'p', type: Number }
       ]
       let args = commandLineArgs(options)
-      args.port = args.port ? args.port : 3000
+      args.port = args.port ? args.port : process.env.PORT
       return args
    }
 
