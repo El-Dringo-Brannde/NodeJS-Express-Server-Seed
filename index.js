@@ -1,9 +1,11 @@
 let app = require('express')();
 let initBusinesses = require('./components/businesses/routes')
+let initUsers = require('./components/user/routes')
 let bodyParser = require('body-parser')
-let mongodb = require('mongodb').MongoClient
-let { url } = require('./config/mongo');
 let commandLineArgs = require('command-line-args')
+
+var mongoClient = require('mongodb').MongoClient
+let { url } = require('./config/mongo');
 
 class server {
    constructor() {
@@ -12,9 +14,8 @@ class server {
    }
 
    async onInit() {
-      let client = await this.connectToMongo();
       this.addMiddleware();
-      this.grabRoutes(client);
+      await this.grabRoutes();
       let CLA = this.pullCLA()
 
       app.listen(CLA.port, () => console.log(`Server running at port ${CLA.port}`))
@@ -25,17 +26,17 @@ class server {
          { name: 'port', alias: 'p', type: Number }
       ]
       let args = commandLineArgs(options)
-      args.port = args.port ? args.port : process.env.PORT
+      if (process.env.NODE_ENV == 'production')
+         args.port = args.port ? args.port : process.env.PORT
+      else
+         args.port = args.port ? args.port : 3000
       return args
    }
 
-   async connectToMongo() {
-      let client = await mongodb.connect(url)
-      return client.db('CS493')
-   }
+   async grabRoutes() {
 
-   grabRoutes(client) {
-      app.use('/businesses', initBusinesses(client));
+      app.use('/businesses', initBusinesses());
+      app.use('/users', initUsers());
    }
 
 

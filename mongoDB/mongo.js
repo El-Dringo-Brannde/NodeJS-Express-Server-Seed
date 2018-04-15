@@ -1,75 +1,57 @@
 let crud = require('./CRUD');
-let self = null;
 
 
 module.exports = class mongoDB extends crud {
-      constructor(mongo) {
-            super(mongo)
-            self = this;
+      constructor(db, collName) {
+            super(db, collName)
       }
 
-      get mongo() { return self.db }
-
-      set database(dbName) { self.db.db(dbName) }
-
-      set collection(collectionName) { self.db.collection(collectionName) }
 
       async aggregate(aggregation) {
-            return await self.db.aggregate(aggregation);
+            return await this.mongo.aggregate(aggregation);
       }
 
       async create(inserting) {
             if (Array.isArray(inserting))
-                  return await self.createMany(inserting)
+                  return await this.createMany(inserting)
             else
-                  return await self.createOne(inserting)
+                  return await this.createOne(inserting)
       }
 
-      async getById(id) {
+      async readById(id) {
             let selector = {
-                  _id: self.id(id)
+                  _id: this.id(id)
             }
-            return await self.read(selector)
+            return await this.read(selector)
       }
 
-      async getAll() {
-            return await self.read({});
+      async readAll() {
+            return await this.read({});
       }
 
       async count(selector) {
-            let retVal = await self.read(selector);
+            let retVal = await this.read(selector);
             return retVal.length
       }
 
-      async removeById(id) {
+      async deleteById(id) {
             let selector = {
-                  _id: self.id(id)
+                  _id: this.id(id)
             }
-            return await self.delete(selector);
+            return await this.delete(selector);
       }
 
       async update(selector, updateVal, multi = false) {
             if (multi)
-                  return await self.updateMany(selector, updateVal);
+                  return await this.updateMany(selector, updateVal);
             else
-                  return await self.updateOne(selector, updateVal);
+                  return await this.updateOne(selector, updateVal);
       }
 
-      async remove(selector, multi = false) {
+      async delete(selector, multi = false) {
             if (multi)
-                  return await self.deleteMany(selector);
+                  return await this.deleteMany(selector);
             else
-                  return await self.deleteOne(selector);
-      }
-
-      aggregate(aggregate) {
-            return new Promise((res, rej) => {
-                  self.db.aggregate(aggregate)
-                        .toArray((err, data) => {
-                              if (err)
-                                    res(err)
-                              res(data)
-                        });
-            });
+                  return await this.deleteOne(selector);
       }
 }

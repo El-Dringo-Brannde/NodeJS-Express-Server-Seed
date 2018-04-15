@@ -1,48 +1,62 @@
 var mongoObj = require('mongodb')
    .ObjectID;
-let self = null;
-
+let mongoClient = require('mongodb').MongoClient
+let { url } = require('./../config/mongo')
 
 module.exports = class CRUD {
-   constructor(mongo) {
-      this.db = mongo;
-      self = this;
+   constructor(db, collection) {
+      this.connectToMongo(db, collection)
+   }
+
+   async connectToMongo(db, collection) {
+      this.db = await mongoClient.connect(url)
+      this.mongo = this.db = this.db.db(db) // copy db for mongo v3+
+      this.mongo = this.mongo.collection(collection)
+   }
+
+   switchDbAndCollection(dbName, collName) {
+      this.mongo = this.db.db(dbName)
+      this.mongo = this.db.collection(collName)
+   }
+
+   switchCollection(collName) {
+      this.db = this.db
+      this.mongo = this.db.collection(collName)
    }
 
    async delete(selector) {
-      return await self.db.deleteMany(selector)
+      return await this.mongo.deleteMany(selector)
    }
 
    async createOne(insertObj) {
-      return await self.db.insertOne(insertObj);
+      return await this.mongo.insertOne(insertObj);
    }
 
    async createMany(insertObjects) {
-      return await self.db.insertMany(insertObjects);
+      return await this.mongo.insertMany(insertObjects);
    }
 
    async read(searchObj) {
-      return await self.db.find(searchObj).toArray();
+      return await this.mongo.find(searchObj).toArray();
    }
 
    async updateOne(searchObj, updateVal) {
-      return await self.db.updateOne(searchObj, { $set: updateVal }, {
+      return await this.mongo.updateOne(searchObj, { $set: updateVal }, {
          upsert: true
       });
    }
 
    async updateMany(searchObj, updateVal) {
-      return await self.db.updateMany(searchObj, { $set: updateVal }, {
+      return await this.mongo.updateMany(searchObj, { $set: updateVal }, {
          upsert: true
       });
    }
 
    async deleteOne(searchObj) {
-      return await self.db.deleteOne(searchObj);
+      return await this.mongo.deleteOne(searchObj);
    }
 
    async deleteMany(searchObj) {
-      return await self.db.deleteMany(searchObj);
+      return await this.mongo.deleteMany(searchObj);
    }
-
 };

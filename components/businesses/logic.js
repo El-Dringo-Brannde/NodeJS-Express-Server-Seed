@@ -1,22 +1,30 @@
-let _ = require('lodash')
 let valid = require('./validator')
 let mongodb = require('./../../mongoDB/mongo')
 let self = null;
+let boom = require('boom')
 
-
+const databaseName = 'CS493'
+const collectionName = 'Businesses'
 module.exports = class businessController extends mongodb {
-    constructor(mongo) {
-        super(mongo)
-        this.db = this.db.collection('Assignment1')
+    constructor() {
+        super(databaseName, collectionName)
         self = this;
     }
 
-    getBusinesses(req, res) {
-        res.json({ foo: 'bar' })
+    async getBusinesses(req, res) {
+        let business = await self.readAll()
+        res.json(business)
     }
 
     async createBusiness(req, res) {
-        let f = await self.create({ bar: 'foo' })
-        res.json(f)
+        self.switchCollection('Users')
+        let users = await self.read({ username: req.body.owner })
+        self.switchCollection('Businesses')
+
+        if (users.length != 0) {
+            let result = await self.create(req.body)
+            res.json(result)
+        } else
+            res.json(boom.badRequest('No user found').output)
     }
 }

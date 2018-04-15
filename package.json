@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/OSU-CS493-Sp18/assignment-1-El-Dringo-Brannde#readme",
   "dependencies": {
+    "boom": "^7.2.0",
     "command-line-args": "^5.0.2",
     "express": "^4.16.3",
     "express-validation": "^1.0.2",

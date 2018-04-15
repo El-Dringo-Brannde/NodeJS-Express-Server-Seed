@@ -5,19 +5,20 @@ let validate = require('express-validation')
 
 
 module.exports = function () {
+
    controller = new controller();
 
    router.use((req, res, next) => next()); //init
 
    // [GET] section
-   router.get('/', controller.getBusinesses)
-   router.get('/:id', controller.getBusinesses)
+   router.get('/', controller.getUsers)
+   router.get('/:username', controller.getUsers)
 
    //[POST] section
-   router.post('/', validate(validator.createdBusiness()), controller.createBusiness)
+   router.post('/', validate(validator.createUser()), controller.createUser)
 
    router.use('*', (req, res) => res.json({ err: `Oh nose, ${req.url} doesn't exist` }))
-   console.log(1)
+
    return router;
 }
 
