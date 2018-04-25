@@ -1101,6 +1101,10 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
+joi-objectid@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/joi-objectid/-/joi-objectid-2.0.0.tgz#56549573a66ba795dcf6b9e226de5f3b2d36ec3a"
+
 joi@^13.1.2:
   version "13.1.2"
   resolved "https://registry.yarnpkg.com/joi/-/joi-13.1.2.tgz#b2db260323cc7f919fafa51e09e2275bd089a97e"
@@ -2105,7 +2109,7 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
-uuid@^3.0.0:
+uuid@^3.0.0, uuid@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 

@@ -3,12 +3,20 @@ let Joi = require('joi')
 class userValidator {
    constructor() { }
 
-   createUser() {
+   get createUser() {
       return {
          body: Joi.object().keys({
-            username: Joi.string().required()
+            owner: Joi.string().required(),
+            type: Joi.string().allow('admin', 'user', 'owner').required()
          }).unknown(false),
+      }
+   }
 
+   get ownedBusinesses() {
+      return {
+         params: {
+            owner: Joi.string().required()
+         }
       }
    }
 }

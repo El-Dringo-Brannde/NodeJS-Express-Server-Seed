@@ -6,6 +6,7 @@ let { url } = require('./../config/mongo')
 module.exports = class CRUD {
    constructor(db, collection) {
       this.connectToMongo(db, collection)
+      this.mongo_ID = mongoObj
    }
 
    async connectToMongo(db, collection) {
@@ -20,8 +21,23 @@ module.exports = class CRUD {
    }
 
    switchCollection(collName) {
-      this.db = this.db
       this.mongo = this.db.collection(collName)
+   }
+
+   aggregate(aggregation) {
+      return new Promise((res, rej) => {
+         this.mongo.aggregate(aggregation)
+            .toArray((err, docs) => {
+               if (!err)
+                  res(docs)
+               else
+                  res(err)
+            })
+      })
+   }
+
+   async removeObjectFromArray(selecting, updating) {
+      return await this.mongo.updateMany(selecting, updating)
    }
 
    async delete(selector) {
@@ -32,12 +48,20 @@ module.exports = class CRUD {
       return await this.mongo.insertOne(insertObj);
    }
 
+   async addToSet(selector, arrayAndVal) {
+      return await this.mongo.updateMany(selector, { $addToSet: arrayAndVal }, { upsert: true })
+   }
+
    async createMany(insertObjects) {
       return await this.mongo.insertMany(insertObjects);
    }
 
    async read(searchObj) {
       return await this.mongo.find(searchObj).toArray();
+   }
+
+   async readObjectInArray(selector, arrayQuery) {
+      return await this.mongo.find(selector, arrayQuery).toArray();
    }
 
    async updateOne(searchObj, updateVal) {
